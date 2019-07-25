@@ -19,8 +19,8 @@ public class Track {
     String name;
     String comment;
 
-    public Track() {
-    }
+
+
     public Track(int id, String name, String comment) {
         this.id = id;
         this.name = name;
