@@ -1,78 +1,81 @@
 package com.stackroute.springboot.controller;
 
-
-
-import com.stackroute.springboot.dao.TrackDao;
 import com.stackroute.springboot.model.Track;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.stackroute.springboot.dao.TrackDao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-
 
 @RestController
+@RequestMapping(value="api/v1")
 public class TrackController {
 
-    @Autowired
-    TrackDao trackDao;
+    TrackDao trackService;
 
-    //update all the methods with code
-    @RequestMapping("/")
-    public String indexPage(Model model) {
-        List<Track> list = trackDao.getAllTracks();
-        model.addAttribute("tracks", list);
-        return "index";
+    public TrackController(TrackDao trackService) {
+        this.trackService = trackService;
     }
-    @RequestMapping("/saveTrack")
-    public ResponseEntity<?> saveTrack(@RequestBody Track track)
-    {
+
+    @PostMapping("track")
+    public ResponseEntity<?> saveTrack(@RequestBody Track track) {
+
         ResponseEntity responseEntity;
-        try
-        {
-            trackDao.saveTrack(track);
+        try {
+            trackService.saveTrack(track);
             responseEntity = new ResponseEntity("Successfully created", HttpStatus.CREATED);
         }
+
         catch(Exception ex) {
             responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
         }
+
         return responseEntity;
+
     }
 
-
-    @RequestMapping("/updateTrack/{id}")
-    public ResponseEntity<?> updateTrack(@RequestBody Track track)
-    {
-        ResponseEntity responseEntity;
-        try
-        {
-            trackDao.saveTrack(track);
-            responseEntity = new ResponseEntity("Successfully updated", HttpStatus.CREATED);
-        }
-        catch(Exception ex) {
-            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
-        }
-        return responseEntity;
-    }
-    @RequestMapping("/deleteTrack")
-    public ResponseEntity<?> deleteTrack(@RequestBody Track track)
-    {
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<?> deleteTrack(@PathVariable Integer id) {
 
         ResponseEntity responseEntity;
-        try
-        {
-            trackDao.deleteTrack(track.getId());
-            responseEntity = new ResponseEntity("Successfully deleted", HttpStatus.OK);
+        try{
+
+            trackService.deleteTrack(id);
+            responseEntity = new ResponseEntity("Delete Successfull", HttpStatus.NO_CONTENT);
+
         }
-        catch(Exception ex) {
+
+        catch (Exception ex) {
+
+            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
+
+        return responseEntity;
+
+    }
+
+    @PutMapping(value = "/update/{id}/{comment}")
+    public ResponseEntity<?> updateTrack(@PathVariable int id, @PathVariable String comment) {
+
+        ResponseEntity responseEntity;
+        try {
+            trackService.UpdateTrack(id,comment);
+            responseEntity = new ResponseEntity<String>("Update Successfull", HttpStatus.CREATED);
+        } catch (Exception ex) {
             responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
         }
         return responseEntity;
+
     }
-    @RequestMapping("/getAllTracks")
-    public ResponseEntity<?> getAllUsers() {
-        return new ResponseEntity<>(trackDao.getAllTracks(), HttpStatus.OK);
+
+
+
+    @GetMapping("track")
+    public ResponseEntity<?> getAllTracks() {
+        ResponseEntity responseEntity = new ResponseEntity<>(trackService.getAllTracks(), HttpStatus.OK);
+        System.out.println(trackService.getByTrackName("hello").toString());
+        System.out.println(trackService.getByTrackName("hello").toString());
+        return responseEntity;
+
     }
+
 }
-

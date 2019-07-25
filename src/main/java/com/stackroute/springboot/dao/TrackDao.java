@@ -10,5 +10,7 @@ public interface TrackDao {
     public boolean deleteTrack(int id);
     public List<Track> getAllTracks();
     public Track getTrackById(int id);
-    public boolean UpdateTrack(Track track);
+    public Track UpdateTrack(int id, String comment);
+    List<Track> getByTrackName(String name);
+    List<Track> getByTrackNameSortByName(String name);
 }

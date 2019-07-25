@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -44,8 +45,24 @@ public class TrackDaoImpl implements TrackDao {
     }
 
     @Override
-    public boolean UpdateTrack(Track track) {
-        trackRepository.save(track);
-        return true;
+    public Track UpdateTrack(int id,String comment) {
+
+        Optional<Track> track = trackRepository.findById(id);
+        Track track1 = track.get();
+        track1.setComment(comment);
+        Track savedTrack = trackRepository.save(track1);
+        return savedTrack;
+
+    }
+
+
+    @Override
+    public List<Track> getByTrackName(String name) {
+        return trackRepository.findByName(name);
+    }
+
+    @Override
+    public List<Track> getByTrackNameSortByName(String name) {
+        return trackRepository.findByNameSortById(name);
     }
 }
