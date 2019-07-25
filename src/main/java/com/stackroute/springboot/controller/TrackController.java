@@ -1,18 +1,20 @@
 package com.stackroute.springboot.controller;
 
 import com.stackroute.springboot.model.Track;
-import com.stackroute.springboot.dao.TrackDao;
+import com.stackroute.springboot.exceptions.TrackAlreadyExistsException;
+import com.stackroute.springboot.exceptions.TrackNotFoundException;
+import com.stackroute.springboot.dao.TrackDaoImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value="/api")
+@RequestMapping(value="api/v1")
 public class TrackController {
 
-    TrackDao trackService;
+    TrackDaoImpl trackService;
 
-    public TrackController(TrackDao trackService) {
+    public TrackController(TrackDaoImpl trackService) {
         this.trackService = trackService;
     }
 
@@ -25,7 +27,7 @@ public class TrackController {
             responseEntity = new ResponseEntity("Successfully created", HttpStatus.CREATED);
         }
 
-        catch(Exception ex) {
+        catch(TrackAlreadyExistsException ex) {
             responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
         }
 
@@ -44,7 +46,7 @@ public class TrackController {
 
         }
 
-        catch (Exception ex) {
+        catch (TrackNotFoundException ex) {
 
             responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
         }

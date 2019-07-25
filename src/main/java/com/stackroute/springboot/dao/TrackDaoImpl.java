@@ -1,5 +1,7 @@
 package com.stackroute.springboot.dao;
 
+import com.stackroute.springboot.exceptions.TrackAlreadyExistsException;
+import com.stackroute.springboot.exceptions.TrackNotFoundException;
 import com.stackroute.springboot.model.Track;
 import com.stackroute.springboot.repository.TrackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +24,15 @@ public class TrackDaoImpl implements TrackDao {
     }
 
     @Override
-    public boolean saveTrack(Track track)
+    public boolean saveTrack (Track track)throws TrackAlreadyExistsException
     {
         trackRepository.save(track);
         return true;
     }
 
     @Override
-    public boolean deleteTrack(int id) {
+    public boolean deleteTrack(int id)throws TrackNotFoundException
+    {
         trackRepository.delete(getTrackById(id));
         return true;
     }
